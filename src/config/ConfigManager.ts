@@ -14,6 +14,15 @@ const ConfigZodSchema = z.object({
     token: z.string().min(1),
     apiVersion: z.string().optional().default('2022-11-28'),
   }),
+  ai: z
+    .object({
+      provider: z.enum(['openai', 'anthropic', 'gemini']).optional().default('openai'),
+      apiKey: z.string().min(1),
+      model: z.string().optional(),
+      maxTokens: z.number().min(1).optional().default(2000),
+      temperature: z.number().min(0).max(2).optional().default(0.7),
+    })
+    .optional(),
   analysis: z
     .object({
       minQualityScore: z.number().min(0).max(100).optional().default(50),
@@ -60,11 +69,34 @@ export class ConfigManager {
   }
 
   private loadConfig(userConfig?: Partial<Config>): Config {
+    const aiProvider = (process.env.AI_PROVIDER || 'openai').toLowerCase() as
+      | 'openai'
+      | 'anthropic'
+      | 'gemini';
+
+    let aiApiKey = '';
+    if (aiProvider === 'openai') {
+      aiApiKey = process.env.OPENAI_API_KEY || '';
+    } else if (aiProvider === 'anthropic') {
+      aiApiKey = process.env.ANTHROPIC_API_KEY || '';
+    } else if (aiProvider === 'gemini') {
+      aiApiKey = process.env.GEMINI_API_KEY || '';
+    }
+
     const defaultConfig: Config = {
       github: {
         token: process.env.GITHUB_TOKEN || '',
         apiVersion: process.env.GITHUB_API_VERSION || '2022-11-28',
       },
+      ai: aiApiKey
+        ? {
+            provider: aiProvider,
+            apiKey: aiApiKey,
+            model: process.env.AI_MODEL,
+            maxTokens: Number(process.env.AI_MAX_TOKENS) || 2000,
+            temperature: Number(process.env.AI_TEMPERATURE) || 0.7,
+          }
+        : undefined,
       analysis: {
         minQualityScore: Number(process.env.MIN_QUALITY_SCORE) || 50,
         maxReposPerBatch: Number(process.env.MAX_REPOS_PER_BATCH) || 10,
@@ -98,6 +130,7 @@ export class ConfigManager {
   private mergeConfigs(defaults: Config, overrides: Partial<Config>): Config {
     return {
       github: { ...defaults.github, ...overrides.github },
+      ai: overrides.ai || defaults.ai,
       analysis: { ...defaults.analysis, ...overrides.analysis },
       scoring: {
         weights: {
@@ -145,6 +178,14 @@ export class ConfigManager {
       throw new Error('GitHub token is required. Set GITHUB_TOKEN environment variable.');
     }
     return this.config.github.token;
+  }
+
+  public getAIConfig(): Config['ai'] {
+    return this.config.ai;
+  }
+
+  public hasAIConfigured(): boolean {
+    return !!this.config.ai?.apiKey;
   }
 
   public static getSchema(): typeof configSchema {

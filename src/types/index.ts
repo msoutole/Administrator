@@ -4,6 +4,7 @@
 
 export interface Config {
   github: GitHubConfig;
+  ai?: AIConfig;
   analysis?: AnalysisConfig;
   scoring?: ScoringConfig;
   output?: OutputConfig;
@@ -12,6 +13,14 @@ export interface Config {
 export interface GitHubConfig {
   token: string;
   apiVersion?: string;
+}
+
+export interface AIConfig {
+  provider: 'openai' | 'anthropic' | 'gemini';
+  apiKey: string;
+  model?: string;
+  maxTokens?: number;
+  temperature?: number;
 }
 
 export interface AnalysisConfig {
