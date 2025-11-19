@@ -1,7 +1,7 @@
 {
   "name": "administrator",
   "version": "1.0.0",
-  "description": "AI-powered CLI tool to analyze & classify GitHub repositories automatically",
+  "description": "Enterprise-grade AI-powered CLI tool that revolutionizes GitHub repository management through intelligent analysis, comprehensive quality scoring, automated classification, and actionable insights - transforming how teams discover, evaluate, and maintain their codebase portfolio",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
