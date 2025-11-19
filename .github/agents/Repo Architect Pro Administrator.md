@@ -1,5 +1,5 @@
 ---
-name: repo-architect-administrator
+name: Repo Architect Pro Administrator
 description: "Um Arquiteto de Software IA que audita, pontua e gera roteiros de modernização para seus repositórios GitHub."
 ---
 
