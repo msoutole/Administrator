@@ -5,6 +5,7 @@
 export { RepositoryAnalyzer } from './analyzers/RepositoryAnalyzer';
 export { DocumentationAnalyzer } from './analyzers/DocumentationAnalyzer';
 export { ScoringEngine } from './analyzers/ScoringEngine';
+export { AIAnalyzer } from './analyzers/AIAnalyzer';
 export { ReportGenerator } from './reporters/ReportGenerator';
 export { ConfigManager } from './config/ConfigManager';
 export { GitHubClient } from './utils/GitHubClient';

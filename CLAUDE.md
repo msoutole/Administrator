@@ -60,21 +60,37 @@ The codebase follows a modular, class-based architecture:
    - Evaluates repository documentation quality
    - Checks for README, CONTRIBUTING, LICENSE, etc.
    - Calculates documentation scores
+   - Uses AI for enhanced README analysis when configured
 
-4. **ScoringEngine** (`src/analyzers/ScoringEngine.ts`)
+4. **AI System** (`src/ai/` and `src/analyzers/AIAnalyzer.ts`)
+   - **AIAnalyzer**: AI-powered repository analysis
+     - Analyzes README quality using AI
+     - Generates code quality insights
+     - Detects security concerns
+     - Creates modernization roadmaps
+     - Gracefully falls back to basic analysis if AI unavailable
+   - **AI Providers**: Support for multiple AI providers
+     - OpenAIProvider: GPT-4, GPT-3.5 support
+     - AnthropicProvider: Claude 3.5, Claude 3 support
+     - GeminiProvider: Gemini 1.5, Gemini 1.0 support
+     - AIProviderFactory: Creates provider instances
+     - All providers implement the AIProvider interface
+
+5. **ScoringEngine** (`src/analyzers/ScoringEngine.ts`)
    - Calculates weighted quality scores
    - Converts metrics into 0-100 scores
    - Assigns letter grades (A-F) based on overall score
    - Uses configurable weights for different dimensions
 
-5. **ReportGenerator** (`src/reporters/ReportGenerator.ts`)
+6. **ReportGenerator** (`src/reporters/ReportGenerator.ts`)
    - Generates Markdown and JSON reports
    - Formats analysis results for output
 
-6. **ConfigManager** (`src/config/ConfigManager.ts`)
+7. **ConfigManager** (`src/config/ConfigManager.ts`)
    - Loads and validates configuration
    - Merges environment variables, config files, and defaults
    - Uses Zod for schema validation
+   - Supports AI provider configuration
 
 ### Data Flow
 

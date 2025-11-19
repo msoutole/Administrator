@@ -1,17 +1,41 @@
 /**
- * Documentation analyzer
+ * Documentation analyzer with optional AI enhancement
  */
 
 import { DocumentationMetrics } from '../types';
 import { GitHubClient } from '../utils/GitHubClient';
+import { AIAnalyzer } from './AIAnalyzer';
+import { Config } from '../types';
 
 export class DocumentationAnalyzer {
-  constructor(private githubClient: GitHubClient) {}
+  private aiAnalyzer?: AIAnalyzer;
+
+  constructor(
+    private githubClient: GitHubClient,
+    aiConfig?: Config['ai']
+  ) {
+    if (aiConfig?.apiKey) {
+      this.aiAnalyzer = new AIAnalyzer(aiConfig);
+    }
+  }
 
   async analyze(owner: string, repo: string): Promise<DocumentationMetrics> {
     const hasReadme = await this.githubClient.hasFile(owner, repo, 'README.md');
     const readmeContent = await this.githubClient.getFileContent(owner, repo, 'README.md');
-    const readmeQuality = this.calculateReadmeQuality(readmeContent);
+
+    // Use AI for README quality if available, otherwise use basic scoring
+    let readmeQuality = 0;
+    if (readmeContent && this.aiAnalyzer?.isAIAvailable()) {
+      try {
+        const aiResult = await this.aiAnalyzer.analyzeReadme(readmeContent);
+        readmeQuality = aiResult.qualityScore;
+      } catch (error) {
+        // Fallback to basic scoring if AI fails
+        readmeQuality = this.calculateReadmeQuality(readmeContent);
+      }
+    } else {
+      readmeQuality = this.calculateReadmeQuality(readmeContent);
+    }
 
     const hasContributing = await this.githubClient.hasFile(owner, repo, 'CONTRIBUTING.md');
     const hasLicense = await this.hasLicense(owner, repo);

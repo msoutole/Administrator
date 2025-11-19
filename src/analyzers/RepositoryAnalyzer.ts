@@ -22,7 +22,10 @@ export class RepositoryAnalyzer {
       configManager.getGitHubToken(),
       this.config.github.apiVersion
     );
-    this.documentationAnalyzer = new DocumentationAnalyzer(this.githubClient);
+    this.documentationAnalyzer = new DocumentationAnalyzer(
+      this.githubClient,
+      this.config.ai
+    );
     this.scoringEngine = new ScoringEngine(this.config.scoring?.weights);
   }
 
