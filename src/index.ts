@@ -9,5 +9,8 @@ export { ReportGenerator } from './reporters/ReportGenerator';
 export { ConfigManager } from './config/ConfigManager';
 export { GitHubClient } from './utils/GitHubClient';
 
+// AI Provider exports
+export * from './ai';
+
 export * from './types';
 export { configSchema } from './schemas/config-schema';

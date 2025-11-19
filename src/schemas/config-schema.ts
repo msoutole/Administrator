@@ -27,6 +27,41 @@ export const configSchema = {
         },
       },
     },
+    ai: {
+      type: 'object',
+      description: 'AI provider configuration',
+      properties: {
+        provider: {
+          type: 'string',
+          description: 'AI provider to use',
+          enum: ['openai', 'anthropic', 'gemini'],
+          default: 'openai',
+        },
+        apiKey: {
+          type: 'string',
+          description: 'API key for the selected provider',
+          minLength: 1,
+        },
+        model: {
+          type: 'string',
+          description: 'AI model to use (provider-specific)',
+        },
+        maxTokens: {
+          type: 'number',
+          description: 'Maximum tokens for AI responses',
+          minimum: 1,
+          default: 2000,
+        },
+        temperature: {
+          type: 'number',
+          description: 'Temperature for AI responses (0.0-2.0)',
+          minimum: 0,
+          maximum: 2,
+          default: 0.7,
+        },
+      },
+      required: ['provider', 'apiKey'],
+    },
     analysis: {
       type: 'object',
       description: 'Analysis configuration',
