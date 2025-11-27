@@ -93,29 +93,29 @@ export interface GeminiCompletionResponse {
 }
 
 export function isOpenAIError(data: unknown): data is OpenAIErrorResponse {
-  return (
-    typeof data === 'object' &&
-    data !== null &&
-    'error' in data &&
-    typeof (data as Record<string, unknown>).error === 'object'
-  );
+  if (typeof data !== 'object' || data === null) {
+    return false;
+  }
+  const obj = data as Record<string, unknown>;
+  return 'error' in obj && typeof obj.error === 'object';
 }
 
 export function isAnthropicError(data: unknown): data is AnthropicErrorResponse {
-  return (
-    typeof data === 'object' &&
-    data !== null &&
-    'error' in data &&
-    typeof (data as Record<string, unknown>).error === 'object'
-  );
+  if (typeof data !== 'object' || data === null) {
+    return false;
+  }
+  const obj = data as Record<string, unknown>;
+  return 'error' in obj && typeof obj.error === 'object';
 }
 
 export function isGeminiError(data: unknown): data is GeminiErrorResponse {
-  return (
-    typeof data === 'object' &&
-    data !== null &&
-    'error' in data &&
-    typeof (data as Record<string, unknown>).error === 'object' &&
-    'code' in (data as Record<string, unknown>).error
-  );
+  if (typeof data !== 'object' || data === null) {
+    return false;
+  }
+  const obj = data as Record<string, unknown>;
+  if (!('error' in obj) || typeof obj.error !== 'object') {
+    return false;
+  }
+  const error = obj.error as Record<string, unknown>;
+  return 'code' in error;
 }
